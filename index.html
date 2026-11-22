@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#3059c8" />
+    <meta name="description" content="하나님의 뜻에 따라 세계 선교와 민족 지도자를 양육하는 강북안디옥교회입니다." />
+    <title>강북안디옥교회</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang&family=Hahmlet:wght@400;500;600;700&family=Pretendard:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="./public/config.js" defer></script>
+    <script src="./script.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">본문 바로가기</a>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="#top" aria-label="강북안디옥교회 홈">
+          <img class="brand-mark" src="./public/assets/logo.png" alt="" />
+          <span>강북안디옥교회</span>
+        </a>
+        <button class="menu-toggle" type="button" aria-label="메뉴 열기" aria-expanded="false" aria-controls="primary-nav">
+          <span></span><span></span><span></span>
+        </button>
+        <nav class="primary-nav" id="primary-nav" aria-label="주요 메뉴">
+          <a href="#about">교회소개</a>
+          <a href="#worship">예배안내</a>
+          <a href="#news">주보보기</a>
+          <a href="#directions">오시는길</a>
+          <a href="#news">갤러리</a>
+          <div class="account-links"><a href="./admin.html?mode=signup">회원가입</a><a href="./admin.html?mode=login">로그인</a></div>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero" id="top" aria-label="교회 소개">
+        <div class="hero-photo" role="img" aria-label="강북안디옥교회 전경"></div>
+        <div class="hero-message">
+          <p>하나님의 뜻에 따라<br />세계 선교와 민족지도자를<br />양육하는 교회 <span>(마 7:21)</span></p>
+        </div>
+      </section>
+
+      <nav class="section-nav" aria-label="페이지 바로가기">
+        <a href="#about" class="is-active">교회소개</a>
+        <a href="#worship">예배안내</a>
+        <a href="#directions">오시는길</a>
+      </nav>
+
+      <section class="quick-links" aria-label="빠른 메뉴">
+        <a href="#about"><span class="quick-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5M5.5 9v11h13V9M9 20v-6h6v6" /></svg></span><span>교회소개</span></a>
+        <a href="#worship"><span class="quick-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3v18M5 8h14M6.5 8l-4 7h8l-4-7Zm11 0-4 7h8l-4-7ZM8 21h8" /></svg></span><span>예배안내</span></a>
+        <a href="#news"><span class="quick-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5zM8 8h8M8 12h8M8 16h5" /></svg></span><span>주보보기</span></a>
+        <a href="#directions"><span class="quick-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z" /><circle cx="12" cy="10" r="2.3" /></svg></span><span>오시는길</span></a>
+      </section>
+
+      <section class="about-section content-section" id="about">
+        <div class="section-heading">
+          <p class="eyebrow">SINCE 2008</p>
+          <h1>비전, 교단 내용이 담긴<br class="mobile-break" /> 간략한 소개</h1>
+          <p class="section-lede">강북안디옥교회를 소개합니다.</p>
+          <a class="outline-button" href="#footer">담임목사 소개 <span aria-hidden="true">›</span></a>
+        </div>
+      </section>
+
+      <section class="worship-section content-section" id="worship">
+        <div class="content-wrap">
+          <div class="section-title">
+            <p class="eyebrow">WORSHIP</p>
+            <h2>예배시간</h2>
+            <p>함께 예배하며 은혜를 나눕니다.</p>
+          </div>
+          <div class="schedule" role="table" aria-label="예배 시간">
+            <div class="schedule-row" role="row"><span role="cell">주일 예배</span><span role="cell">11:00 ~</span></div>
+            <div class="schedule-row" role="row"><span role="cell">수요 예배</span><span role="cell">19:30 ~</span></div>
+            <div class="schedule-row" role="row"><span role="cell">금요 예배</span><span role="cell">시간 안내</span></div>
+            <div class="schedule-row" role="row"><span role="cell">여리고기도회</span><span role="cell">시간 안내</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="news-section content-section" id="news">
+        <div class="content-wrap">
+          <div class="section-title section-title-row">
+            <div><p class="eyebrow">NEWS &amp; NOTICE</p><h2>교회 소식</h2></div>
+            <a class="outline-button more-button" href="#news-list">더보기 <span aria-hidden="true">›</span></a>
+          </div>
+          <div class="news-grid" id="news-list">
+            <article class="news-card">
+              <img src="./public/assets/event-placeholder.png" alt="" />
+              <div class="news-meta"><time>소식</time><span>교회 행사</span></div>
+              <h3>새로운 소식을 준비하고 있습니다</h3>
+            </article>
+            <article class="news-card">
+              <img src="./public/assets/event-placeholder.png" alt="" />
+              <div class="news-meta"><time>소식</time><span>교회 행사</span></div>
+              <h3>새로운 소식을 준비하고 있습니다</h3>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="directions-section content-section" id="directions">
+        <div class="content-wrap directions-layout">
+          <div class="section-title">
+            <p class="eyebrow">DIRECTIONS</p>
+            <h2>찾아오시는 길</h2>
+            <p>강북안디옥교회에서 함께 예배드려요.</p>
+          </div>
+          <div class="map-card">
+            <div class="map-frame">
+              <div class="map-placeholder" id="map-placeholder"><span id="map-message">네이버 지도 설정을 준비하고 있습니다</span></div>
+              <div class="naver-map" id="naver-map" aria-label="강북안디옥교회 위치 지도"></div>
+            </div>
+            <div class="contact-row"><span>주소</span><span id="church-address">서울 마포구 월드컵북로8길 32</span></div>
+            <div class="contact-row"><span>전화</span><a href="tel:02-3143-0191">02-3143-0191</a></div>
+            <a class="map-link" href="https://map.naver.com/p/search/강북안디옥교회" target="_blank" rel="noreferrer">네이버 지도에서 길찾기 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer" id="footer">
+      <div class="footer-inner"><a class="brand footer-brand" href="#top"><img class="brand-mark" src="./public/assets/logo.png" alt="" /><span>강북안디옥교회</span></a><p id="footer-contact">서울 마포구 월드컵북로8길 32 · 전화 02-3143-0191</p><small>© 강북안디옥교회. All rights reserved.</small><a class="footer-admin-link" href="./admin.html?mode=login">관리자 로그인</a></div>
+    </footer>
+  </body>
+</html>

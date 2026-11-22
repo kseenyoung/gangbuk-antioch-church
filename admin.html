@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#3059c8" />
+    <title>관리자 | 강북안디옥교회</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./admin.css" />
+    <script src="./public/config.js" defer></script>
+    <script src="./admin.js" defer></script>
+  </head>
+  <body class="admin-page">
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="./index.html"><img class="brand-mark" src="./public/assets/logo.png" alt="" /><span>강북안디옥교회</span></a>
+        <a class="admin-back-link" href="./index.html">홈페이지로 돌아가기</a>
+      </div>
+    </header>
+    <main class="admin-main">
+      <section class="admin-intro">
+        <p class="eyebrow">CHURCH WEBSITE</p>
+        <h1>사이트 관리</h1>
+        <p>관리자 계정으로 로그인해 홈페이지 내용을 수정하세요.</p>
+      </section>
+
+      <section class="auth-card" id="auth-card" aria-labelledby="auth-title">
+        <h2 id="auth-title">관리자 로그인</h2>
+        <div class="auth-tabs" role="tablist" aria-label="계정 메뉴">
+          <button type="button" class="auth-tab is-active" data-mode="login" role="tab" aria-selected="true">로그인</button>
+          <button type="button" class="auth-tab" data-mode="signup" role="tab" aria-selected="false">회원가입</button>
+        </div>
+        <form id="auth-form">
+          <label>이메일<input name="email" type="email" autocomplete="email" required /></label>
+          <label>비밀번호<input name="password" type="password" autocomplete="current-password" minlength="8" required /></label>
+          <button class="admin-primary-button" type="submit" id="auth-submit">로그인</button>
+        </form>
+        <p class="auth-note">계정은 누구나 만들 수 있지만, 관리 권한은 데이터베이스에 등록된 관리자에게만 부여됩니다.</p>
+        <p class="admin-message" id="admin-message" role="status" aria-live="polite"></p>
+      </section>
+
+      <section class="admin-dashboard" id="admin-dashboard" hidden>
+        <div class="dashboard-heading">
+          <div><p class="eyebrow">ADMIN</p><h2>홈페이지 콘텐츠</h2></div>
+          <button class="admin-secondary-button" id="sign-out" type="button">로그아웃</button>
+        </div>
+        <p class="admin-message" id="dashboard-message" role="status" aria-live="polite"></p>
+
+        <section class="admin-card">
+          <h3>교회 정보</h3>
+          <form id="settings-form" class="settings-form">
+            <label>교회 이름<input name="church_name" required /></label>
+            <label>메인 문구<textarea name="hero_message" rows="3"></textarea></label>
+            <label>소개 제목<input name="intro_title" /></label>
+            <label>소개 내용<textarea name="intro_body" rows="3"></textarea></label>
+            <label>전화번호<input name="phone" type="tel" /></label>
+            <label>주소<input name="address" /></label>
+            <div class="coordinate-fields">
+              <label>지도 위도<input name="map_latitude" inputmode="decimal" /></label>
+              <label>지도 경도<input name="map_longitude" inputmode="decimal" /></label>
+              <label>지도 확대<input name="map_zoom" type="number" min="1" max="21" /></label>
+            </div>
+            <button class="admin-primary-button" type="submit">교회 정보 저장</button>
+          </form>
+        </section>
+
+        <section class="admin-card">
+          <div class="admin-card-heading"><h3>예배 시간</h3><button class="admin-secondary-button" type="button" id="add-service">예배 추가</button></div>
+          <div class="editor-list" id="services-editor"></div>
+        </section>
+
+        <section class="admin-card">
+          <div class="admin-card-heading"><h3>교회 소식</h3><button class="admin-secondary-button" type="button" id="add-news">소식 추가</button></div>
+          <div class="editor-list" id="news-editor"></div>
+        </section>
+      </section>
+    </main>
+  </body>
+</html>

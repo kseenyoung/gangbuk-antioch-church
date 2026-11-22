@@ -1,0 +1,55 @@
+.admin-page { min-height: 100vh; background: #f4f6fa; }
+.admin-main { width: min(100% - 32px, 820px); margin: 0 auto; padding: 42px 0 72px; }
+.admin-intro { margin-bottom: 24px; }
+.admin-intro .eyebrow, .dashboard-heading .eyebrow { margin: 0 0 7px; color: #46639d; font-size: 11px; font-weight: 700; letter-spacing: .16em; }
+.admin-intro h1, .dashboard-heading h2 { margin: 0; font: 600 28px/1.35 Hahmlet, serif; }
+.admin-intro > p:last-child { margin: 8px 0 0; color: #5a5a5a; font-size: 14px; }
+.admin-back-link { font-size: 13px; }
+.auth-card, .admin-card { border: 1px solid #e0e4ec; border-radius: 14px; background: #fff; box-shadow: 0 8px 24px #192b4d0c; }
+.auth-card { width: min(100%, 440px); margin: 0 auto; padding: 25px; }
+.auth-card h2 { margin: 0 0 18px; font: 600 20px/1.4 Hahmlet, serif; }
+.auth-tabs { margin-bottom: 19px; display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid #e3e6ec; }
+.auth-tab { padding: 10px 8px; border: 0; border-bottom: 2px solid transparent; background: transparent; color: #646b77; cursor: pointer; }
+.auth-tab.is-active { border-color: var(--blue); color: var(--blue); font-weight: 700; }
+#auth-form, .settings-form { display: grid; gap: 15px; }
+.admin-page label { display: grid; gap: 7px; color: #323844; font-size: 13px; font-weight: 600; }
+.admin-page input, .admin-page textarea { width: 100%; min-height: 42px; padding: 10px 12px; border: 1px solid #cfd5df; border-radius: 8px; background: #fff; color: #171a21; font: 400 14px/1.5 Pretendard, "Noto Sans KR", sans-serif; }
+.admin-page textarea { min-height: 90px; resize: vertical; }
+.admin-page input:focus, .admin-page textarea:focus { border-color: var(--blue); outline: 3px solid #3059c81a; }
+.admin-primary-button, .admin-secondary-button, .admin-danger-button { min-height: 40px; padding: 0 15px; border: 1px solid transparent; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 700; }
+.admin-primary-button { background: var(--blue); color: #fff; }
+.admin-primary-button:disabled { opacity: .6; cursor: wait; }
+.admin-secondary-button { border-color: #cbd2df; background: #fff; color: #293247; }
+.admin-danger-button { border-color: #f0c8c8; background: #fff5f5; color: #a42222; }
+.auth-note { margin: 15px 0 0; color: #666e7b; font-size: 12px; line-height: 1.6; }
+.admin-message { min-height: 1.5em; margin: 10px 0 0; color: #314e9d; font-size: 13px; line-height: 1.6; }
+.admin-message.is-error { color: #a42222; }
+.admin-dashboard[hidden], .auth-card[hidden] { display: none; }
+.dashboard-heading { margin: 44px 0 10px; display: flex; align-items: end; justify-content: space-between; gap: 15px; }
+.dashboard-heading h2 { font-size: 23px; }
+.admin-dashboard > .admin-message { margin-bottom: 14px; }
+.admin-card { margin-top: 16px; padding: 22px; }
+.admin-card > h3, .admin-card-heading h3 { margin: 0; font: 600 18px/1.4 Hahmlet, serif; }
+.admin-card > h3 { margin-bottom: 18px; }
+.settings-form { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.settings-form label:nth-child(2), .settings-form label:nth-child(4), .settings-form > button { grid-column: 1 / -1; }
+.coordinate-fields { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr .7fr; gap: 12px; }
+.admin-card-heading { margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.editor-list { display: grid; gap: 12px; }
+.editor-form { padding: 16px; display: grid; grid-template-columns: 1fr 1fr; align-items: end; gap: 12px; border: 1px solid #e5e8ef; border-radius: 10px; }
+.editor-form .wide-field, .editor-form .editor-actions { grid-column: 1 / -1; }
+.editor-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.editor-actions .visibility-toggle { display: flex; align-items: center; gap: 8px; margin-right: auto; }
+.visibility-toggle input { width: 16px; min-height: 16px; height: 16px; }
+.admin-empty { color: #677083; font-size: 13px; }
+
+@media (max-width: 600px) {
+  .admin-main { padding-top: 30px; }
+  .admin-back-link { max-width: 110px; text-align: right; }
+  .auth-card, .admin-card { padding: 18px; }
+  .settings-form, .editor-form { grid-template-columns: 1fr; }
+  .settings-form label:nth-child(2), .settings-form label:nth-child(4), .settings-form > button,
+  .coordinate-fields, .editor-form .wide-field, .editor-form .editor-actions { grid-column: auto; }
+  .coordinate-fields { grid-template-columns: 1fr 1fr; }
+  .coordinate-fields label:last-child { grid-column: 1 / -1; }
+}
