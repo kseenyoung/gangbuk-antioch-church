@@ -30,11 +30,13 @@ Figma 시안을 바탕으로 만든 정적 홈페이지입니다. GitHub Pages�
 
 5. [관리자 로그인](https://kseenyoung.github.io/gangbuk-antioch-church/admin.html?mode=login)으로 사이트 콘텐츠를 관리합니다.
 
-## 무료 지도
+## 카카오 지도
 
-사이트 안에 MapLibre GL JS와 OpenFreeMap 공개 지도 서비스를 사용해 지도를 표시합니다. 가입, API 키, 결제수단 등록 없이 사용할 수 있으며 지도 출처 표시는 지도에 자동으로 포함됩니다. 공용 서비스라 별도 서비스 수준 보장은 없습니다.
+웹페이지 안에 Kakao Maps JavaScript SDK를 표시합니다. Kakao Developers에서 앱을 선택한 뒤 카카오맵 API를 켜고, 앱의 JavaScript 키 설정에 `https://kseenyoung.github.io`를 웹 도메인으로 등록하세요. 무료 쿼터가 적용되는 앱의 앱 정보에 **카카오맵 무료 쿼터** 배지가 있는지 확인합니다. 개발자 계정 첫 번째로 카카오맵을 활성화한 앱에만 무료 쿼터가 적용됩니다.
 
-초기 좌표는 마포구 월드컵북로8길 32 인근의 임시값입니다. 관리자 페이지에서 교회 주소와 위도·경도를 실제 위치로 확인하고 수정하세요. 길찾기 링크는 NAVER 지도 검색으로 연결됩니다.
+발급한 JavaScript 키는 `public/config.js`의 `kakaoMapJavascriptKey`에 입력합니다. 이 키는 브라우저에서 사용하도록 제공되는 공개 키이므로, 등록 도메인을 해당 사이트로 제한하고 Admin/REST 키를 넣지 마세요. 키가 연결되기 전이나 Kakao SDK가 로드되지 않을 때는 결제수단이 필요 없는 OpenFreeMap 지도가 대체 표시됩니다.
+
+초기 좌표는 마포구 월드컵북로8길 32 인근의 임시값입니다. 관리자 페이지에서 교회 주소와 위도·경도를 실제 위치로 확인하고 수정하세요. 길찾기 링크도 카카오맵을 엽니다.
 
 ## GitHub Pages
 

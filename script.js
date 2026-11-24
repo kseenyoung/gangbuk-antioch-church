@@ -151,11 +151,54 @@ async function loadFreeMap(settings) {
       if (!map.loaded()) showMapMessage("지도를 불러오지 못했습니다. 잠시 후 다시 확인해 주세요.");
     });
     const mapLink = document.querySelector(".map-link");
-    if (mapLink) mapLink.href = `https://map.naver.com/p/search/${encodeURIComponent(settings.address || settings.church_name || "강북안디옥교회")}`;
+    if (mapLink) mapLink.href = `https://map.kakao.com/link/search/${encodeURIComponent(settings.address || settings.church_name || "강북안디옥교회")}`;
   } catch (error) {
     console.error("무료 지도를 불러오지 못했습니다.", error);
     showMapMessage("무료 지도를 불러오지 못했습니다. 네트워크 연결을 확인해 주세요.");
   }
+}
+
+function loadKakaoMap(settings) {
+  const javascriptKey = siteConfig.kakaoMapJavascriptKey;
+  if (!javascriptKey) {
+    showMapMessage("카카오맵 키 연결 전입니다. 무료 지도를 표시합니다.");
+    loadFreeMap(settings);
+    return;
+  }
+
+  const latitude = Number(settings.map_latitude || siteConfig.mapCenter?.latitude);
+  const longitude = Number(settings.map_longitude || siteConfig.mapCenter?.longitude);
+  const zoom = Number(settings.map_zoom || siteConfig.mapCenter?.zoom || 16);
+  if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
+    showMapMessage("관리자 페이지에서 지도 좌표를 입력해 주세요.");
+    return;
+  }
+
+  const fallbackToFreeMap = (message) => {
+    console.error(message);
+    showMapMessage("카카오 지도를 불러오지 못해 무료 지도를 표시합니다.");
+    loadFreeMap(settings);
+  };
+  const script = document.createElement("script");
+  script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${encodeURIComponent(javascriptKey)}&autoload=false`;
+  script.async = true;
+  script.onload = () => {
+    if (!window.kakao?.maps?.load) {
+      fallbackToFreeMap("카카오 지도 SDK를 사용할 수 없습니다.");
+      return;
+    }
+    window.kakao.maps.load(() => {
+      const center = new window.kakao.maps.LatLng(latitude, longitude);
+      const level = Math.max(1, Math.min(14, Math.round(19 - zoom)));
+      const map = new window.kakao.maps.Map(document.querySelector("#church-map"), { center, level });
+      new window.kakao.maps.Marker({ map, position: center, title: settings.church_name || "강북안디옥교회" });
+      document.querySelector("#map-placeholder")?.classList.add("is-hidden");
+      const mapLink = document.querySelector(".map-link");
+      if (mapLink) mapLink.href = `https://map.kakao.com/link/to/${encodeURIComponent(settings.church_name || "강북안디옥교회")},${latitude},${longitude}`;
+    });
+  };
+  script.onerror = () => fallbackToFreeMap("카카오 지도 SDK를 불러오지 못했습니다. 키와 도메인을 확인해 주세요.");
+  document.head.append(script);
 }
 
 async function loadPublicContent() {
@@ -196,7 +239,7 @@ async function loadPublicContent() {
     console.error("사이트 정보를 불러오지 못했습니다.", error);
   }
 
-  loadFreeMap(settings);
+  loadKakaoMap(settings);
 }
 
 loadPublicContent();
