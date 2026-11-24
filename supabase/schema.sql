@@ -40,20 +40,26 @@ create or replace function public.is_site_admin()
 returns boolean
 language sql
 stable
-security definer
+security invoker
 set search_path = public
 as $$
-  select exists (
+  select auth.uid() is not null and exists (
     select 1 from public.admin_users where user_id = auth.uid()
   );
 $$;
 
 revoke all on function public.is_site_admin() from public;
-grant execute on function public.is_site_admin() to anon, authenticated;
+grant execute on function public.is_site_admin() to authenticated;
 
 grant select on public.site_settings, public.worship_services, public.news_posts to anon, authenticated;
 grant insert, update, delete on public.site_settings, public.worship_services, public.news_posts to authenticated;
-revoke all on public.admin_users from anon, authenticated;
+grant select on public.admin_users to authenticated;
+revoke all on public.admin_users from anon;
+revoke insert, update, delete on public.admin_users from authenticated;
+
+drop policy if exists "Users can verify their own admin status" on public.admin_users;
+create policy "Users can verify their own admin status" on public.admin_users
+  for select to authenticated using ((select auth.uid()) = user_id);
 
 drop policy if exists "Public can read site settings" on public.site_settings;
 create policy "Public can read site settings" on public.site_settings
@@ -61,7 +67,7 @@ create policy "Public can read site settings" on public.site_settings
 drop policy if exists "Admins can manage site settings" on public.site_settings;
 create policy "Admins can manage site settings" on public.site_settings
   for all to authenticated
-  using (public.is_site_admin()) with check (public.is_site_admin());
+  using ((select public.is_site_admin())) with check ((select public.is_site_admin()));
 
 drop policy if exists "Public can read visible worship services" on public.worship_services;
 create policy "Public can read visible worship services" on public.worship_services
@@ -69,7 +75,7 @@ create policy "Public can read visible worship services" on public.worship_servi
 drop policy if exists "Admins can manage worship services" on public.worship_services;
 create policy "Admins can manage worship services" on public.worship_services
   for all to authenticated
-  using (public.is_site_admin()) with check (public.is_site_admin());
+  using ((select public.is_site_admin())) with check ((select public.is_site_admin()));
 
 drop policy if exists "Public can read published news" on public.news_posts;
 create policy "Public can read published news" on public.news_posts
@@ -77,7 +83,7 @@ create policy "Public can read published news" on public.news_posts
 drop policy if exists "Admins can manage news" on public.news_posts;
 create policy "Admins can manage news" on public.news_posts
   for all to authenticated
-  using (public.is_site_admin()) with check (public.is_site_admin());
+  using ((select public.is_site_admin())) with check ((select public.is_site_admin()));
 
 insert into public.site_settings (key, value) values
   ('church_name', '강북안디옥교회'),
