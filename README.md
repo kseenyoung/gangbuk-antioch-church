@@ -16,11 +16,12 @@ Figma 시안을 바탕으로 만든 정적 홈페이지입니다. 공개 사이�
 
 ## Supabase 설정
 
-1. [Supabase](https://supabase.com/dashboard)에 무료 프로젝트를 만듭니다.
-2. SQL Editor에서 [`supabase/schema.sql`](./supabase/schema.sql)을 실행합니다.
-3. 프로젝트 URL과 publishable/anon 키를 확보합니다. `service_role` 또는 secret 키는 사용하지 않습니다.
-4. 처음 사용할 관리자 계정으로 `admin.html?mode=signup`에서 가입하고 이메일 인증을 마칩니다.
-5. SQL Editor에서 그 이메일을 관리자 목록에 추가합니다.
+이 프로젝트는 무료 요금제의 `gangbuk-antioch-church` Supabase 프로젝트에 연결되어 있고, 사이트 설정·예배·소식 테이블과 RLS 정책을 이미 적용했습니다. 새 Supabase 프로젝트를 사용한다면 SQL Editor에서 [`supabase/schema.sql`](./supabase/schema.sql)을 실행합니다.
+
+1. 프로젝트 URL과 publishable 키를 GitHub Actions repository secrets에 각각 `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY` 이름으로 저장합니다. `service_role` 또는 secret 키는 사용하지 않습니다.
+2. 배포 후 Supabase Authentication의 Site URL을 사이트 주소로 설정하고, Additional Redirect URLs에 `https://<계정>.github.io/<저장소>/**` 형식을 추가합니다.
+3. 처음 사용할 관리자 계정으로 `admin.html?mode=signup`에서 가입하고 이메일 인증을 마칩니다.
+4. SQL Editor에서 그 이메일을 관리자 목록에 추가합니다.
 
    ```sql
    insert into public.admin_users (user_id)
@@ -30,7 +31,7 @@ Figma 시안을 바탕으로 만든 정적 홈페이지입니다. 공개 사이�
 
 6. [관리자 로그인](./admin.html?mode=login) 후 콘텐츠를 관리합니다.
 
-Supabase 무료 요금제에서 프로젝트가 일정 기간 비활성 상태면 일시 중지될 수 있습니다. 무료 요금제의 현재 한도는 [요금 안내](https://supabase.com/pricing)를 확인하세요.
+Supabase 무료 프로젝트는 일정 기간 비활성 상태면 일시 중지될 수 있습니다. 현재 무료 요금제 한도는 [요금 안내](https://supabase.com/pricing)를 확인하세요.
 
 ## NAVER 지도 설정
 

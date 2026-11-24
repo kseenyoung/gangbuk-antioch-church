@@ -13,7 +13,7 @@ create table if not exists public.site_settings (
 
 create table if not exists public.worship_services (
   id uuid primary key default gen_random_uuid(),
-  name text not null,
+  name text not null unique,
   time_text text not null default '',
   sort_order integer not null default 0,
   is_visible boolean not null default true,
@@ -49,41 +49,60 @@ as $$
 $$;
 
 revoke all on function public.is_site_admin() from public;
-grant execute on function public.is_site_admin() to authenticated;
+grant execute on function public.is_site_admin() to anon, authenticated;
 
 grant select on public.site_settings, public.worship_services, public.news_posts to anon, authenticated;
 grant insert, update, delete on public.site_settings, public.worship_services, public.news_posts to authenticated;
-grant select on public.admin_users to authenticated;
-revoke all on public.admin_users from anon;
-revoke insert, update, delete on public.admin_users from authenticated;
+revoke all on public.admin_users from public, anon;
+grant select on public.admin_users to anon, authenticated;
+revoke insert, update, delete on public.admin_users from anon, authenticated;
 
 drop policy if exists "Users can verify their own admin status" on public.admin_users;
+drop policy if exists "본인 확인" on public.admin_users;
 create policy "Users can verify their own admin status" on public.admin_users
-  for select to authenticated using ((select auth.uid()) = user_id);
+  for select to anon, authenticated using ((select auth.uid()) = user_id);
 
 drop policy if exists "Public can read site settings" on public.site_settings;
 create policy "Public can read site settings" on public.site_settings
   for select to anon, authenticated using (true);
 drop policy if exists "Admins can manage site settings" on public.site_settings;
-create policy "Admins can manage site settings" on public.site_settings
-  for all to authenticated
-  using ((select public.is_site_admin())) with check ((select public.is_site_admin()));
+drop policy if exists "Admins can insert site settings" on public.site_settings;
+create policy "Admins can insert site settings" on public.site_settings
+  for insert to authenticated with check ((select public.is_site_admin()));
+drop policy if exists "Admins can update site settings" on public.site_settings;
+create policy "Admins can update site settings" on public.site_settings
+  for update to authenticated using ((select public.is_site_admin())) with check ((select public.is_site_admin()));
+drop policy if exists "Admins can delete site settings" on public.site_settings;
+create policy "Admins can delete site settings" on public.site_settings
+  for delete to authenticated using ((select public.is_site_admin()));
 
 drop policy if exists "Public can read visible worship services" on public.worship_services;
-create policy "Public can read visible worship services" on public.worship_services
-  for select to anon, authenticated using (is_visible = true);
+create policy "Public and admins can read worship services" on public.worship_services
+  for select to anon, authenticated using (is_visible = true or (select public.is_site_admin()));
 drop policy if exists "Admins can manage worship services" on public.worship_services;
-create policy "Admins can manage worship services" on public.worship_services
-  for all to authenticated
-  using ((select public.is_site_admin())) with check ((select public.is_site_admin()));
+drop policy if exists "Admins can insert worship services" on public.worship_services;
+create policy "Admins can insert worship services" on public.worship_services
+  for insert to authenticated with check ((select public.is_site_admin()));
+drop policy if exists "Admins can update worship services" on public.worship_services;
+create policy "Admins can update worship services" on public.worship_services
+  for update to authenticated using ((select public.is_site_admin())) with check ((select public.is_site_admin()));
+drop policy if exists "Admins can delete worship services" on public.worship_services;
+create policy "Admins can delete worship services" on public.worship_services
+  for delete to authenticated using ((select public.is_site_admin()));
 
 drop policy if exists "Public can read published news" on public.news_posts;
-create policy "Public can read published news" on public.news_posts
-  for select to anon, authenticated using (is_published = true);
+create policy "Public and admins can read news" on public.news_posts
+  for select to anon, authenticated using (is_published = true or (select public.is_site_admin()));
 drop policy if exists "Admins can manage news" on public.news_posts;
-create policy "Admins can manage news" on public.news_posts
-  for all to authenticated
-  using ((select public.is_site_admin())) with check ((select public.is_site_admin()));
+drop policy if exists "Admins can insert news" on public.news_posts;
+create policy "Admins can insert news" on public.news_posts
+  for insert to authenticated with check ((select public.is_site_admin()));
+drop policy if exists "Admins can update news" on public.news_posts;
+create policy "Admins can update news" on public.news_posts
+  for update to authenticated using ((select public.is_site_admin())) with check ((select public.is_site_admin()));
+drop policy if exists "Admins can delete news" on public.news_posts;
+create policy "Admins can delete news" on public.news_posts
+  for delete to authenticated using ((select public.is_site_admin()));
 
 insert into public.site_settings (key, value) values
   ('church_name', '강북안디옥교회'),
@@ -102,4 +121,4 @@ insert into public.worship_services (name, time_text, sort_order, is_visible) va
   ('수요 예배', '19:30 ~', 2, true),
   ('금요 예배', '시간 안내', 3, true),
   ('여리고기도회', '시간 안내', 4, true)
-on conflict do nothing;
+on conflict (name) do nothing;

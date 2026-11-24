@@ -222,7 +222,13 @@ authForm?.addEventListener("submit", async (event) => {
   setMessage(authMessage, "처리 중입니다.");
   try {
     if (mode === "signup") {
-      const { error } = await supabase.auth.signUp({ email, password });
+      const emailRedirectTo = new URL(window.location.href);
+      emailRedirectTo.searchParams.set("mode", "login");
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { emailRedirectTo: emailRedirectTo.toString() }
+      });
       if (error) throw error;
       setMessage(authMessage, "가입 요청을 완료했습니다. 이메일 인증 후 관리자 권한을 등록해 주세요.");
     } else {
