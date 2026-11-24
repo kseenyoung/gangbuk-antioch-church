@@ -30,14 +30,11 @@ Figma 시안을 바탕으로 만든 정적 홈페이지입니다. GitHub Pages�
 
 5. [관리자 로그인](https://kseenyoung.github.io/gangbuk-antioch-church/admin.html?mode=login)으로 사이트 콘텐츠를 관리합니다.
 
-## NAVER 지도 설정
+## 무료 지도
 
-1. [NAVER Cloud Platform](https://console.ncloud.com/)에서 Maps 애플리케이션을 만들고 **Web Dynamic Map**을 사용 설정합니다.
-2. 웹 서비스 URL에 `https://kseenyoung.github.io`를 등록합니다.
-3. 발급된 Client ID를 `public/config.js`의 `naverMapClientId`에 넣고 `main`에 push합니다.
-4. 관리자 페이지에서 주소와 위도·경도를 실제 교회 위치로 확인하고 수정합니다.
+사이트 안에 MapLibre GL JS와 OpenFreeMap 공개 지도 서비스를 사용해 지도를 표시합니다. 가입, API 키, 결제수단 등록 없이 사용할 수 있으며 지도 출처 표시는 지도에 자동으로 포함됩니다. 공용 서비스라 별도 서비스 수준 보장은 없습니다.
 
-Client ID가 설정되기 전에는 사이트 안에서 지도 영역에 안내 문구가 표시됩니다. 초기 좌표는 마포구 월드컵북로8길 32 인근의 임시값이므로 실제 위치를 확인하세요.
+초기 좌표는 마포구 월드컵북로8길 32 인근의 임시값입니다. 관리자 페이지에서 교회 주소와 위도·경도를 실제 위치로 확인하고 수정하세요. 길찾기 링크는 NAVER 지도 검색으로 연결됩니다.
 
 ## GitHub Pages
 

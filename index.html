@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang&family=Hahmlet:wght@400;500;600;700&family=Pretendard:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@6.19.0/dist/maplibre-gl.css" />
     <link rel="stylesheet" href="./styles.css" />
     <script src="./public/config.js" defer></script>
     <script src="./script.js" defer></script>
@@ -111,8 +112,8 @@
           </div>
           <div class="map-card">
             <div class="map-frame">
-              <div class="map-placeholder" id="map-placeholder"><span id="map-message">네이버 지도 설정을 준비하고 있습니다</span></div>
-              <div class="naver-map" id="naver-map" aria-label="강북안디옥교회 위치 지도"></div>
+              <div class="map-placeholder" id="map-placeholder"><span id="map-message">무료 지도를 불러오는 중입니다</span></div>
+              <div class="free-map" id="church-map" role="application" aria-label="강북안디옥교회 위치 지도"></div>
             </div>
             <div class="contact-row"><span>주소</span><span id="church-address">서울 마포구 월드컵북로8길 32</span></div>
             <div class="contact-row"><span>전화</span><a href="tel:02-3143-0191">02-3143-0191</a></div>

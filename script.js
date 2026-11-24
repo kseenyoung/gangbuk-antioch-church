@@ -123,13 +123,7 @@ function showMapMessage(message) {
   placeholder?.classList.remove("is-hidden");
 }
 
-function loadNaverMap(settings) {
-  const clientId = siteConfig.naverMapClientId;
-  if (!clientId) {
-    showMapMessage("네이버 지도 API 키를 설정하면 지도가 표시됩니다.");
-    return;
-  }
-
+async function loadFreeMap(settings) {
   const latitude = Number(settings.map_latitude || siteConfig.mapCenter?.latitude);
   const longitude = Number(settings.map_longitude || siteConfig.mapCenter?.longitude);
   const zoom = Number(settings.map_zoom || siteConfig.mapCenter?.zoom || 16);
@@ -138,23 +132,30 @@ function loadNaverMap(settings) {
     return;
   }
 
-  const script = document.createElement("script");
-  script.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${encodeURIComponent(clientId)}`;
-  script.async = true;
-  script.onload = () => {
-    if (!window.naver?.maps) {
-      showMapMessage("네이버 지도를 불러오지 못했습니다. 지도 키와 허용 도메인을 확인해 주세요.");
-      return;
-    }
-    const center = new window.naver.maps.LatLng(latitude, longitude);
-    const map = new window.naver.maps.Map("naver-map", { center, zoom, zoomControl: true, zoomControlOptions: { position: window.naver.maps.Position.TOP_RIGHT } });
-    new window.naver.maps.Marker({ map, position: center, title: settings.church_name || "강북안디옥교회" });
-    document.querySelector("#map-placeholder")?.classList.add("is-hidden");
+  try {
+    const maplibregl = await import("https://unpkg.com/maplibre-gl@6.19.0/dist/maplibre-gl.mjs");
+    const map = new maplibregl.Map({
+      container: "church-map",
+      style: "https://tiles.openfreemap.org/styles/liberty",
+      center: [longitude, latitude],
+      zoom,
+      attributionControl: true
+    });
+    new maplibregl.Marker({ color: "#3059c8" })
+      .setLngLat([longitude, latitude])
+      .setPopup(new maplibregl.Popup({ offset: 25 }).setText(settings.church_name || "강북안디옥교회"))
+      .addTo(map);
+    map.once("load", () => document.querySelector("#map-placeholder")?.classList.add("is-hidden"));
+    map.on("error", (event) => {
+      console.error("지도를 불러오지 못했습니다.", event.error);
+      if (!map.loaded()) showMapMessage("지도를 불러오지 못했습니다. 잠시 후 다시 확인해 주세요.");
+    });
     const mapLink = document.querySelector(".map-link");
     if (mapLink) mapLink.href = `https://map.naver.com/p/search/${encodeURIComponent(settings.address || settings.church_name || "강북안디옥교회")}`;
-  };
-  script.onerror = () => showMapMessage("네이버 지도를 불러오지 못했습니다. Naver Maps API 설정을 확인해 주세요.");
-  document.head.append(script);
+  } catch (error) {
+    console.error("무료 지도를 불러오지 못했습니다.", error);
+    showMapMessage("무료 지도를 불러오지 못했습니다. 네트워크 연결을 확인해 주세요.");
+  }
 }
 
 async function loadPublicContent() {
@@ -195,7 +196,7 @@ async function loadPublicContent() {
     console.error("사이트 정보를 불러오지 못했습니다.", error);
   }
 
-  loadNaverMap(settings);
+  loadFreeMap(settings);
 }
 
 loadPublicContent();

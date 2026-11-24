@@ -3,6 +3,5 @@
 window.SITE_CONFIG = {
   supabaseUrl: "",
   supabaseKey: "",
-  naverMapClientId: "",
   mapCenter: { latitude: 37.5598636, longitude: 126.9187769, zoom: 16 }
 };
