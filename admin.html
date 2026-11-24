@@ -33,7 +33,18 @@
         <form id="auth-form">
           <label>이메일<input name="email" type="email" autocomplete="email" required /></label>
           <label>비밀번호<input name="password" type="password" autocomplete="current-password" minlength="8" required /></label>
+          <button class="auth-inline-link" id="forgot-password" type="button">비밀번호를 잊으셨나요?</button>
           <button class="admin-primary-button" type="submit" id="auth-submit">로그인</button>
+        </form>
+        <form id="password-reset-request" hidden>
+          <label>가입한 이메일<input name="reset_email" type="email" autocomplete="email" required /></label>
+          <button class="admin-primary-button" type="submit">재설정 이메일 보내기</button>
+          <button class="auth-inline-link" id="back-to-login" type="button">로그인으로 돌아가기</button>
+        </form>
+        <form id="password-update-form" hidden>
+          <label>새 비밀번호<input name="new_password" type="password" autocomplete="new-password" minlength="8" required /></label>
+          <label>새 비밀번호 확인<input name="confirm_password" type="password" autocomplete="new-password" minlength="8" required /></label>
+          <button class="admin-primary-button" type="submit">비밀번호 변경</button>
         </form>
         <p class="auth-note">계정은 누구나 만들 수 있지만, 관리 권한은 데이터베이스에 등록된 관리자에게만 부여됩니다.</p>
         <p class="admin-message" id="admin-message" role="status" aria-live="polite"></p>

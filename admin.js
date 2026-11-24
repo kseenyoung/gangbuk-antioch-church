@@ -2,6 +2,8 @@ const config = window.SITE_CONFIG ?? {};
 const authCard = document.querySelector("#auth-card");
 const dashboard = document.querySelector("#admin-dashboard");
 const authForm = document.querySelector("#auth-form");
+const resetRequestForm = document.querySelector("#password-reset-request");
+const passwordUpdateForm = document.querySelector("#password-update-form");
 const authMessage = document.querySelector("#admin-message");
 const dashboardMessage = document.querySelector("#dashboard-message");
 const tabs = [...document.querySelectorAll(".auth-tab")];
@@ -13,17 +15,45 @@ function setMessage(element, message, isError = false) {
   element.classList.toggle("is-error", isError);
 }
 
-function setMode(mode) {
+function setMode(mode, updateUrl = true) {
   const isSignup = mode === "signup";
+  document.querySelector(".auth-tabs").hidden = false;
+  authForm.hidden = false;
+  resetRequestForm.hidden = true;
+  passwordUpdateForm.hidden = true;
+  document.querySelector(".auth-note").hidden = false;
   document.querySelector("#auth-title").textContent = isSignup ? "회원가입" : "관리자 로그인";
   document.querySelector("#auth-submit").textContent = isSignup ? "계정 만들기" : "로그인";
+  document.querySelector("#forgot-password").hidden = isSignup;
   document.querySelector('[name="password"]').autocomplete = isSignup ? "new-password" : "current-password";
   tabs.forEach((tab) => {
     const active = tab.dataset.mode === mode;
     tab.classList.toggle("is-active", active);
     tab.setAttribute("aria-selected", String(active));
   });
-  history.replaceState(null, "", `?mode=${mode}`);
+  if (updateUrl) history.replaceState(null, "", `?mode=${mode}`);
+}
+
+function showResetRequest() {
+  document.querySelector(".auth-tabs").hidden = true;
+  authForm.hidden = true;
+  resetRequestForm.hidden = false;
+  passwordUpdateForm.hidden = true;
+  document.querySelector(".auth-note").hidden = true;
+  document.querySelector("#auth-title").textContent = "비밀번호 찾기";
+  const email = authForm.elements.namedItem("email").value.trim();
+  if (email) resetRequestForm.elements.namedItem("reset_email").value = email;
+  history.replaceState(null, "", "?mode=reset");
+}
+
+function showPasswordUpdate() {
+  document.querySelector(".auth-tabs").hidden = true;
+  authForm.hidden = true;
+  resetRequestForm.hidden = true;
+  passwordUpdateForm.hidden = false;
+  document.querySelector(".auth-note").hidden = true;
+  document.querySelector("#auth-title").textContent = "새 비밀번호 설정";
+  setMessage(authMessage, "새 비밀번호를 입력해 주세요.");
 }
 
 function makeField(labelText, name, value, type = "text", options = {}) {
@@ -282,6 +312,54 @@ tabs.forEach((tab) => tab.addEventListener("click", () => {
   setMessage(authMessage, "");
 }));
 
+document.querySelector("#forgot-password")?.addEventListener("click", showResetRequest);
+document.querySelector("#back-to-login")?.addEventListener("click", () => {
+  setMode("login");
+  setMessage(authMessage, "");
+});
+
+resetRequestForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const button = resetRequestForm.querySelector('button[type="submit"]');
+  button.disabled = true;
+  setMessage(authMessage, "재설정 이메일을 보내고 있습니다.");
+  try {
+    const email = String(new FormData(resetRequestForm).get("reset_email")).trim();
+    const redirectTo = new URL("./admin.html?mode=recovery", window.location.href).toString();
+    const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
+    if (error) throw error;
+    setMessage(authMessage, "해당 주소로 계정이 있다면 비밀번호 재설정 링크를 보냈습니다. 이메일을 확인해 주세요.");
+  } catch (error) {
+    setMessage(authMessage, error.message || "재설정 이메일을 보내지 못했습니다. 잠시 후 다시 시도해 주세요.", true);
+  } finally {
+    button.disabled = false;
+  }
+});
+
+passwordUpdateForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const values = new FormData(passwordUpdateForm);
+  const password = String(values.get("new_password"));
+  const confirmation = String(values.get("confirm_password"));
+  if (password !== confirmation) {
+    setMessage(authMessage, "두 비밀번호가 일치하지 않습니다.", true);
+    return;
+  }
+  const button = passwordUpdateForm.querySelector('button[type="submit"]');
+  button.disabled = true;
+  setMessage(authMessage, "비밀번호를 변경하고 있습니다.");
+  try {
+    const { data, error } = await supabase.auth.updateUser({ password });
+    if (error) throw error;
+    history.replaceState(null, "", "./admin.html?mode=login");
+    await enterDashboard(data.user);
+  } catch (error) {
+    setMessage(authMessage, error.message || "비밀번호를 변경하지 못했습니다. 링크가 만료되었는지 확인해 주세요.", true);
+  } finally {
+    button.disabled = false;
+  }
+});
+
 authForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
   const mode = document.querySelector(".auth-tab.is-active")?.dataset.mode ?? "login";
@@ -357,7 +435,8 @@ document.querySelector("#sign-out")?.addEventListener("click", async () => {
 
 async function initializeAdmin() {
   const params = new URLSearchParams(window.location.search);
-  setMode(params.get("mode") === "signup" ? "signup" : "login");
+  setMode(params.get("mode") === "signup" ? "signup" : "login", false);
+  if (params.get("mode") === "recovery") showPasswordUpdate();
   if (!config.supabaseUrl || !config.supabaseKey) {
     setMessage(authMessage, "Supabase 연결 설정이 필요합니다. README의 설정 안내를 확인해 주세요.", true);
     return;
@@ -365,9 +444,12 @@ async function initializeAdmin() {
   try {
     const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
     supabase = createClient(config.supabaseUrl, config.supabaseKey);
+    supabase.auth.onAuthStateChange((event) => {
+      if (event === "PASSWORD_RECOVERY") showPasswordUpdate();
+    });
     const { data: { session }, error } = await supabase.auth.getSession();
     if (error) throw error;
-    if (session?.user) await enterDashboard(session.user);
+    if (session?.user && params.get("mode") !== "recovery") await enterDashboard(session.user);
   } catch (error) {
     setMessage(authMessage, error.message || "Supabase에 연결하지 못했습니다.", true);
   }

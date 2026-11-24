@@ -5,11 +5,11 @@ Figma 시안을 바탕으로 만든 정적 홈페이지입니다. GitHub Pages�
 ## 기능
 
 - 반응형 교회 홈페이지
-- Supabase 이메일 회원가입·로그인
+- Supabase 이메일 회원가입·로그인·비밀번호 재설정
 - 관리자 권한 확인과 관리자 전용 콘텐츠 편집
 - 교회 소개, 연락처, 주소와 지도 좌표 수정
 - 예배 시간과 교회 소식 관리
-- NAVER Maps JavaScript API를 페이지 안에 표시
+- Kakao Maps JavaScript SDK를 페이지 안에 표시
 
 일반 회원은 사이트를 수정할 수 없습니다. `public.admin_users`에 등록된 계정만 관리 화면에 들어갈 수 있습니다. 브라우저에는 Supabase publishable 키만 사용하며, `service_role` 또는 secret 키는 포함하지 않습니다.
 
@@ -29,6 +29,8 @@ Figma 시안을 바탕으로 만든 정적 홈페이지입니다. GitHub Pages�
    ```
 
 5. [관리자 로그인](https://kseenyoung.github.io/gangbuk-antioch-church/admin.html?mode=login)으로 사이트 콘텐츠를 관리합니다.
+
+비밀번호가 기억나지 않으면 관리자 로그인 화면의 **비밀번호를 잊으셨나요?**를 눌러 가입한 이메일로 재설정 링크를 요청합니다. 이메일 링크에서 새 비밀번호를 설정합니다.
 
 ## 카카오 지도
 
