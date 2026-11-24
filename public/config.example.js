@@ -2,7 +2,7 @@
 // Never put a Supabase service_role/secret key in a browser file.
 window.SITE_CONFIG = {
   supabaseUrl: "",
-  supabaseAnonKey: "",
+  supabaseKey: "",
   naverMapClientId: "",
   mapCenter: { latitude: 37.5598636, longitude: 126.9187769, zoom: 16 }
 };

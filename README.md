@@ -48,7 +48,7 @@ Supabase 무료 요금제에서 프로젝트가 일정 기간 비활성 상태�
 | 이름 | 값 |
 | --- | --- |
 | `SUPABASE_URL` | Supabase 프로젝트 URL |
-| `SUPABASE_ANON_KEY` | Supabase publishable/anon 클라이언트 키 |
+| `SUPABASE_PUBLISHABLE_KEY` | Supabase publishable 클라이언트 키 |
 | `NAVER_MAP_CLIENT_ID` | NAVER Maps 애플리케이션 Client ID |
 
 GitHub Pages 배포 소스를 **GitHub Actions**로 설정한 뒤 `main` 브랜치에 push하면 `.github/workflows/deploy.yml`이 설정 파일을 생성하고 사이트를 배포합니다. 실제 키는 생성된 공개 배포 파일에 포함되므로, Supabase RLS 정책과 Naver 웹 도메인 제한이 반드시 설정되어 있어야 합니다. Supabase `service_role` 키는 절대 추가하지 않습니다.

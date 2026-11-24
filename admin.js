@@ -265,13 +265,13 @@ document.querySelector("#sign-out")?.addEventListener("click", async () => {
 async function initializeAdmin() {
   const params = new URLSearchParams(window.location.search);
   setMode(params.get("mode") === "signup" ? "signup" : "login");
-  if (!config.supabaseUrl || !config.supabaseAnonKey) {
+  if (!config.supabaseUrl || !config.supabaseKey) {
     setMessage(authMessage, "Supabase 연결 설정이 필요합니다. README의 설정 안내를 확인해 주세요.", true);
     return;
   }
   try {
     const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
-    supabase = createClient(config.supabaseUrl, config.supabaseAnonKey);
+    supabase = createClient(config.supabaseUrl, config.supabaseKey);
     const { data: { session }, error } = await supabase.auth.getSession();
     if (error) throw error;
     if (session?.user) await enterDashboard(session.user);

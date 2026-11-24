@@ -41,10 +41,10 @@ const siteConfig = window.SITE_CONFIG ?? {};
 let supabaseClientPromise;
 
 function getSupabaseClient() {
-  if (!siteConfig.supabaseUrl || !siteConfig.supabaseAnonKey) return Promise.resolve(null);
+  if (!siteConfig.supabaseUrl || !siteConfig.supabaseKey) return Promise.resolve(null);
   if (!supabaseClientPromise) {
     supabaseClientPromise = import("https://esm.sh/@supabase/supabase-js@2")
-      .then(({ createClient }) => createClient(siteConfig.supabaseUrl, siteConfig.supabaseAnonKey));
+      .then(({ createClient }) => createClient(siteConfig.supabaseUrl, siteConfig.supabaseKey));
   }
   return supabaseClientPromise;
 }
