@@ -437,6 +437,7 @@ async function initializeAdmin() {
   const params = new URLSearchParams(window.location.search);
   setMode(params.get("mode") === "signup" ? "signup" : "login", false);
   if (params.get("mode") === "recovery") showPasswordUpdate();
+  else if (params.get("mode") === "reset") showResetRequest();
   if (!config.supabaseUrl || !config.supabaseKey) {
     setMessage(authMessage, "Supabase 연결 설정이 필요합니다. README의 설정 안내를 확인해 주세요.", true);
     return;
