@@ -105,11 +105,58 @@ function renderNewsForm(post = {}) {
   return form;
 }
 
+function renderBulletinForm(item = {}) {
+  const form = document.createElement("form");
+  form.className = "editor-form bulletin-form";
+  if (item.id) form.dataset.id = item.id;
+  form.append(
+    makeField("주보 제목", "title", item.title ?? "", "text", { required: true }),
+    makeField("게시 날짜", "published_at", item.published_at ?? new Date().toISOString().slice(0, 10), "date", { required: true }),
+    makeField("설명", "description", item.description ?? "", "textarea", { className: "wide-field" }),
+    makeField("PDF 주소", "file_url", item.file_url ?? "", "url", { className: "wide-field", required: true })
+  );
+  const actions = document.createElement("div");
+  actions.className = "editor-actions";
+  const visibility = document.createElement("label");
+  visibility.className = "visibility-toggle";
+  const checkbox = document.createElement("input"); checkbox.type = "checkbox"; checkbox.name = "is_published"; checkbox.checked = item.is_published ?? false;
+  visibility.append(checkbox, document.createTextNode("주보 페이지에 게시"));
+  actions.append(visibility, makeActionButton("저장", "admin-primary-button", "submit"));
+  if (item.id) actions.append(makeActionButton("삭제", "admin-danger-button", "button", "delete-bulletin"));
+  form.append(actions);
+  return form;
+}
+
+function renderGalleryForm(item = {}) {
+  const form = document.createElement("form");
+  form.className = "editor-form gallery-form";
+  if (item.id) form.dataset.id = item.id;
+  form.append(
+    makeField("사진 제목", "title", item.title ?? "", "text", { required: true }),
+    makeField("행사 날짜", "event_date", item.event_date ?? new Date().toISOString().slice(0, 10), "date", { required: true }),
+    makeField("사진 설명", "description", item.description ?? "", "textarea", { className: "wide-field" }),
+    makeField("이미지 주소", "image_url", item.image_url ?? "", "url", { className: "wide-field", required: true }),
+    makeField("정렬 순서", "sort_order", item.sort_order ?? 0, "number", { min: 0 })
+  );
+  const actions = document.createElement("div");
+  actions.className = "editor-actions";
+  const visibility = document.createElement("label");
+  visibility.className = "visibility-toggle";
+  const checkbox = document.createElement("input"); checkbox.type = "checkbox"; checkbox.name = "is_published"; checkbox.checked = item.is_published ?? false;
+  visibility.append(checkbox, document.createTextNode("갤러리에 게시"));
+  actions.append(visibility, makeActionButton("저장", "admin-primary-button", "submit"));
+  if (item.id) actions.append(makeActionButton("삭제", "admin-danger-button", "button", "delete-gallery"));
+  form.append(actions);
+  return form;
+}
+
 async function loadAdminContent() {
   const settingsResult = await supabase.from("site_settings").select("key,value");
   const servicesResult = await supabase.from("worship_services").select("id,name,time_text,sort_order,is_visible").order("sort_order");
   const newsResult = await supabase.from("news_posts").select("id,title,summary,image_url,published_at,is_published").order("published_at", { ascending: false });
-  for (const result of [settingsResult, servicesResult, newsResult]) {
+  const bulletinsResult = await supabase.from("bulletins").select("id,title,description,file_url,published_at,is_published").order("published_at", { ascending: false });
+  const galleryResult = await supabase.from("gallery_items").select("id,title,description,image_url,event_date,is_published,sort_order").order("sort_order").order("event_date", { ascending: false });
+  for (const result of [settingsResult, servicesResult, newsResult, bulletinsResult, galleryResult]) {
     if (result.error) throw result.error;
   }
 
@@ -128,6 +175,15 @@ async function loadAdminContent() {
   newsEditor.replaceChildren();
   if (!newsResult.data?.length) newsEditor.append(Object.assign(document.createElement("p"), { className: "admin-empty", textContent: "등록된 소식이 없습니다." }));
   else newsResult.data.forEach((post) => newsEditor.append(renderNewsForm(post)));
+
+  const bulletinsEditor = document.querySelector("#bulletins-editor");
+  bulletinsEditor.replaceChildren();
+  if (!bulletinsResult.data?.length) bulletinsEditor.append(Object.assign(document.createElement("p"), { className: "admin-empty", textContent: "등록된 주보가 없습니다." }));
+  else bulletinsResult.data.forEach((item) => bulletinsEditor.append(renderBulletinForm(item)));
+  const galleryEditor = document.querySelector("#gallery-editor");
+  galleryEditor.replaceChildren();
+  if (!galleryResult.data?.length) galleryEditor.append(Object.assign(document.createElement("p"), { className: "admin-empty", textContent: "등록된 사진이 없습니다." }));
+  else galleryResult.data.forEach((item) => galleryEditor.append(renderGalleryForm(item)));
 }
 
 async function enterDashboard(user) {
@@ -148,11 +204,26 @@ async function enterDashboard(user) {
 async function saveSettings(event) {
   event.preventDefault();
   const form = event.currentTarget;
-  const keys = ["church_name", "hero_message", "intro_title", "intro_body", "phone", "address", "map_latitude", "map_longitude", "map_zoom"];
+  const keys = ["church_name", "hero_message", "intro_title", "intro_body", "pastor_name", "pastor_title", "pastor_bio", "pastor_image_url", "phone", "address", "map_latitude", "map_longitude", "map_zoom"];
   const rows = keys.map((key) => ({ key, value: String(form.elements.namedItem(key).value).trim(), updated_at: new Date().toISOString() }));
   const { error } = await supabase.from("site_settings").upsert(rows, { onConflict: "key" });
   if (error) setMessage(dashboardMessage, error.message, true);
   else setMessage(dashboardMessage, "교회 정보를 저장했습니다.");
+}
+
+async function saveContentForm(event, table, fields, label) {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const values = new FormData(form);
+  const record = Object.fromEntries(fields.map((key) => [key, key === "sort_order" ? Number(values.get(key) || 0) : String(values.get(key) ?? "").trim()]));
+  record.is_published = values.has("is_published");
+  record.updated_at = new Date().toISOString();
+  const query = form.dataset.id
+    ? supabase.from(table).update(record).eq("id", form.dataset.id)
+    : supabase.from(table).insert(record);
+  const { error } = await query;
+  if (error) setMessage(dashboardMessage, error.message, true);
+  else { setMessage(dashboardMessage, `${label}을(를) 저장했습니다.`); await loadAdminContent(); }
 }
 
 async function saveService(event) {
@@ -261,6 +332,22 @@ document.querySelector("#news-editor")?.addEventListener("click", (event) => {
   const button = event.target.closest('[data-action="delete-news"]');
   const form = button?.closest("form");
   if (form?.dataset.id) deleteRecord("news_posts", form.dataset.id, "교회 소식").catch((error) => setMessage(dashboardMessage, error.message, true));
+});
+document.querySelector("#add-bulletin")?.addEventListener("click", () => document.querySelector("#bulletins-editor").prepend(renderBulletinForm()));
+document.querySelector("#add-gallery")?.addEventListener("click", () => document.querySelector("#gallery-editor").prepend(renderGalleryForm()));
+document.querySelector("#bulletins-editor")?.addEventListener("submit", (event) => {
+  if (event.target.matches(".bulletin-form")) saveContentForm(event, "bulletins", ["title", "description", "file_url", "published_at"], "주보").catch((error) => setMessage(dashboardMessage, error.message, true));
+});
+document.querySelector("#gallery-editor")?.addEventListener("submit", (event) => {
+  if (event.target.matches(".gallery-form")) saveContentForm(event, "gallery_items", ["title", "description", "image_url", "event_date", "sort_order"], "갤러리 사진").catch((error) => setMessage(dashboardMessage, error.message, true));
+});
+document.querySelector("#bulletins-editor")?.addEventListener("click", (event) => {
+  const form = event.target.closest('[data-action="delete-bulletin"]')?.closest("form");
+  if (form?.dataset.id) deleteRecord("bulletins", form.dataset.id, "주보").catch((error) => setMessage(dashboardMessage, error.message, true));
+});
+document.querySelector("#gallery-editor")?.addEventListener("click", (event) => {
+  const form = event.target.closest('[data-action="delete-gallery"]')?.closest("form");
+  if (form?.dataset.id) deleteRecord("gallery_items", form.dataset.id, "갤러리 사진").catch((error) => setMessage(dashboardMessage, error.message, true));
 });
 document.querySelector("#sign-out")?.addEventListener("click", async () => {
   const { error } = await supabase.auth.signOut();

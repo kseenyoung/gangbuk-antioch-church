@@ -53,6 +53,10 @@
             <label>메인 문구<textarea name="hero_message" rows="3"></textarea></label>
             <label>소개 제목<input name="intro_title" /></label>
             <label>소개 내용<textarea name="intro_body" rows="3"></textarea></label>
+            <label>담임목사 성함<input name="pastor_name" /></label>
+            <label>담임목사 직함<input name="pastor_title" /></label>
+            <label class="wide-field">담임목사 소개<textarea name="pastor_bio" rows="5" placeholder="확인된 약력과 인사말을 입력해 주세요."></textarea></label>
+            <label class="wide-field">담임목사 사진 URL<input name="pastor_image_url" type="url" /></label>
             <label>전화번호<input name="phone" type="tel" /></label>
             <label>주소<input name="address" /></label>
             <div class="coordinate-fields">
@@ -72,6 +76,16 @@
         <section class="admin-card">
           <div class="admin-card-heading"><h3>교회 소식</h3><button class="admin-secondary-button" type="button" id="add-news">소식 추가</button></div>
           <div class="editor-list" id="news-editor"></div>
+        </section>
+
+        <section class="admin-card">
+          <div class="admin-card-heading"><div><h3>주보 관리</h3><p class="admin-help">PDF 링크를 등록하면 방문자가 브라우저에서 주보를 확인할 수 있습니다.</p></div><button class="admin-secondary-button" type="button" id="add-bulletin">주보 추가</button></div>
+          <div class="editor-list" id="bulletins-editor"></div>
+        </section>
+
+        <section class="admin-card">
+          <div class="admin-card-heading"><div><h3>갤러리 관리</h3><p class="admin-help">이미지의 공개 주소(URL)를 등록해 사진을 게시합니다.</p></div><button class="admin-secondary-button" type="button" id="add-gallery">사진 추가</button></div>
+          <div class="editor-list" id="gallery-editor"></div>
         </section>
       </section>
     </main>

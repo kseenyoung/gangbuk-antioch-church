@@ -1,0 +1,30 @@
+.subpage { min-height: 100vh; background: #f7f8fb; }
+.subpage .site-header { position: sticky; top: 0; }
+.subpage-home { color: #33415f; font-size: 13px; font-weight: 700; }
+.subpage-main { width: min(100% - 36px, 1000px); margin: 0 auto; padding: 54px 0 80px; }
+.subpage-heading { margin: 0 auto 34px; text-align: center; }
+.subpage-heading .eyebrow { margin: 0 0 8px; color: #46639d; font-size: 11px; font-weight: 700; letter-spacing: .16em; }
+.subpage-heading h1 { margin: 0; font: 600 30px/1.4 Hahmlet, serif; }
+.subpage-heading > p:last-child { margin: 10px 0 0; color: #606779; font-size: 14px; }
+.subpage-content { width: min(100%, 860px); margin: auto; }
+.content-empty { padding: 46px 20px; border: 1px solid #e1e5ed; border-radius: 14px; background: #fff; color: #697184; text-align: center; line-height: 1.7; }
+.pastor-layout { display: grid; grid-template-columns: minmax(240px, .8fr) 1.2fr; gap: 38px; align-items: center; padding: 28px; border: 1px solid #e3e6ed; border-radius: 16px; background: #fff; box-shadow: 0 10px 34px #192b4d0a; }
+.pastor-photo { display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 10px; background: #edf1f7; }
+.pastor-photo-placeholder { display: grid; place-items: center; padding: 20px; color: #73809a; font: 500 18px Hahmlet, serif; }
+.pastor-copy .eyebrow { color: #46639d; font-size: 11px; letter-spacing: .16em; font-weight: 700; }
+.pastor-copy .pastor-title { margin: 26px 0 4px; color: #606779; font-size: 14px; }
+.pastor-copy h2 { margin: 0; font: 600 27px/1.4 Hahmlet, serif; }
+.pastor-bio { margin-top: 22px; color: #464c58; font-size: 15px; line-height: 2; white-space: normal; }
+.bulletin-list { display: grid; gap: 12px; }
+.bulletin-card { display: flex; justify-content: space-between; align-items: center; gap: 22px; padding: 22px 24px; border: 1px solid #e1e5ed; border-radius: 12px; background: #fff; }
+.bulletin-card time, .gallery-card time { color: #64708a; font-size: 12px; }
+.bulletin-card h2, .gallery-card h2 { margin: 6px 0 0; font: 600 18px/1.5 Hahmlet, serif; }
+.bulletin-card p, .gallery-card p { margin: 6px 0 0; color: #626a79; font-size: 13px; line-height: 1.7; }
+.gallery-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.gallery-card { overflow: hidden; border: 1px solid #e1e5ed; border-radius: 12px; background: #fff; }
+.gallery-card > img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; background: #edf1f7; }
+.gallery-card > div { padding: 16px; }
+.gallery-card h2 { font-size: 16px; }
+.subpage-footer { padding: 22px max(20px, calc((100% - 1000px) / 2)); display: flex; justify-content: space-between; gap: 12px; background: #171b25; color: #e8ebf2; font-size: 12px; }
+@media (max-width: 700px) { .subpage-main { padding: 38px 0 58px; } .pastor-layout { grid-template-columns: 1fr; gap: 24px; padding: 18px; } .pastor-photo { width: min(100%, 360px); aspect-ratio: 4/3; margin: auto; } .gallery-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; } .bulletin-card { align-items: flex-start; flex-direction: column; padding: 18px; } }
+@media (max-width: 420px) { .gallery-grid { grid-template-columns: 1fr; } .subpage-heading h1 { font-size: 26px; } }

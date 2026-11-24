@@ -122,3 +122,50 @@ insert into public.worship_services (name, time_text, sort_order, is_visible) va
   ('금요 예배', '시간 안내', 3, true),
   ('여리고기도회', '시간 안내', 4, true)
 on conflict (name) do nothing;
+
+-- 주보 및 갤러리 콘텐츠. 공개된 항목만 누구나 읽고, 관리자는 인증 후 전체 항목을 관리합니다.
+create table if not exists public.bulletins (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  description text not null default '',
+  file_url text not null default '',
+  published_at date not null default current_date,
+  is_published boolean not null default false,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.gallery_items (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  description text not null default '',
+  image_url text not null,
+  event_date date not null default current_date,
+  is_published boolean not null default false,
+  sort_order integer not null default 0,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+alter table public.bulletins enable row level security;
+alter table public.gallery_items enable row level security;
+grant select on public.bulletins, public.gallery_items to anon, authenticated;
+grant insert, update, delete on public.bulletins, public.gallery_items to authenticated;
+
+create policy "Public can read published bulletins" on public.bulletins
+  for select to anon, authenticated using (is_published = true or (select public.is_site_admin()));
+create policy "Admins can insert bulletins" on public.bulletins
+  for insert to authenticated with check ((select public.is_site_admin()));
+create policy "Admins can update bulletins" on public.bulletins
+  for update to authenticated using ((select public.is_site_admin())) with check ((select public.is_site_admin()));
+create policy "Admins can delete bulletins" on public.bulletins
+  for delete to authenticated using ((select public.is_site_admin()));
+
+create policy "Public can read published gallery" on public.gallery_items
+  for select to anon, authenticated using (is_published = true or (select public.is_site_admin()));
+create policy "Admins can insert gallery" on public.gallery_items
+  for insert to authenticated with check ((select public.is_site_admin()));
+create policy "Admins can update gallery" on public.gallery_items
+  for update to authenticated using ((select public.is_site_admin())) with check ((select public.is_site_admin()));
+create policy "Admins can delete gallery" on public.gallery_items
+  for delete to authenticated using ((select public.is_site_admin()));
