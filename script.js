@@ -8,12 +8,11 @@ menuButton?.addEventListener("click", () => {
   primaryNav?.classList.toggle("is-open", !isExpanded);
 });
 
-primaryNav?.querySelectorAll("a").forEach((link) => {
-  link.addEventListener("click", () => {
-    menuButton?.setAttribute("aria-expanded", "false");
-    menuButton?.setAttribute("aria-label", "메뉴 열기");
-    primaryNav.classList.remove("is-open");
-  });
+primaryNav?.addEventListener("click", (event) => {
+  if (!event.target.closest("a, button")) return;
+  menuButton?.setAttribute("aria-expanded", "false");
+  menuButton?.setAttribute("aria-label", "메뉴 열기");
+  primaryNav.classList.remove("is-open");
 });
 
 const sectionLinks = document.querySelectorAll(".section-nav a");
@@ -47,6 +46,65 @@ function getSupabaseClient() {
       .then(({ createClient }) => createClient(siteConfig.supabaseUrl, siteConfig.supabaseKey));
   }
   return supabaseClientPromise;
+}
+
+function setupFeedbackForm() {
+  const form = document.querySelector("#beta-feedback-form");
+  const messageField = form?.elements.namedItem("message");
+  const characterCount = document.querySelector("#feedback-count");
+  const feedbackStatus = document.querySelector("#feedback-message");
+  if (!form || !messageField) return;
+
+  messageField.addEventListener("input", () => {
+    if (characterCount) characterCount.textContent = String(messageField.value.length);
+  });
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const values = new FormData(form);
+    const message = String(values.get("message") ?? "").trim();
+    const category = String(values.get("category") ?? "개선 의견");
+    const honeypot = String(values.get("website") ?? "");
+    const button = form.querySelector('button[type="submit"]');
+    if (honeypot) {
+      form.reset();
+      if (characterCount) characterCount.textContent = "0";
+      feedbackStatus.textContent = "의견을 보내주셔서 감사합니다.";
+      return;
+    }
+    if (message.length < 5 || message.length > 2000) {
+      feedbackStatus.textContent = "의견을 5자 이상 2,000자 이하로 입력해 주세요.";
+      feedbackStatus.classList.add("is-error");
+      return;
+    }
+    let lastSubmission = 0;
+    try { lastSubmission = Number(localStorage.getItem("church-beta-feedback-at") || 0); } catch {}
+    const waitSeconds = Math.ceil((60_000 - (Date.now() - lastSubmission)) / 1000);
+    if (waitSeconds > 0 && waitSeconds <= 60) {
+      feedbackStatus.textContent = `의견은 1분에 한 번 보낼 수 있습니다. ${waitSeconds}초 후 다시 시도해 주세요.`;
+      feedbackStatus.classList.add("is-error");
+      return;
+    }
+
+    button.disabled = true;
+    feedbackStatus.classList.remove("is-error");
+    feedbackStatus.textContent = "의견을 보내고 있습니다.";
+    try {
+      const client = await getSupabaseClient();
+      if (!client) throw new Error("의견 저장 연결이 준비되지 않았습니다.");
+      const { error } = await client.from("beta_feedback").insert({ category, message });
+      if (error) throw error;
+      try { localStorage.setItem("church-beta-feedback-at", String(Date.now())); } catch {}
+      form.reset();
+      if (characterCount) characterCount.textContent = "0";
+      feedbackStatus.textContent = "의견을 보내주셔서 감사합니다. 사이트 개선에 반영하겠습니다.";
+    } catch (error) {
+      feedbackStatus.textContent = error.message || "의견을 보내지 못했습니다. 잠시 후 다시 시도해 주세요.";
+      feedbackStatus.classList.add("is-error");
+    } finally {
+      button.disabled = false;
+    }
+  });
 }
 
 function setText(selector, value) {
@@ -243,3 +301,4 @@ async function loadPublicContent() {
 }
 
 loadPublicContent();
+setupFeedbackForm();

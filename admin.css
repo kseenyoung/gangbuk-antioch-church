@@ -48,6 +48,11 @@
 .visibility-toggle input { width: 16px; min-height: 16px; height: 16px; }
 .admin-empty { color: #677083; font-size: 13px; }
 .admin-help { margin: 5px 0 0; color: #677083; font-size: 12px; line-height: 1.5; }
+.feedback-admin-list { display: grid; gap: 12px; }
+.feedback-admin-item { padding: 16px; border: 1px solid #e5e8ef; border-radius: 10px; background: #fff; }
+.feedback-admin-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; color: #667083; font-size: 12px; }
+.feedback-admin-meta strong { color: #34486f; }
+.feedback-admin-message { margin: 12px 0 15px; color: #303846; font-size: 14px; line-height: 1.7; white-space: pre-wrap; }
 
 @media (max-width: 600px) {
   .admin-main { padding-top: 30px; }

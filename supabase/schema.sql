@@ -169,3 +169,31 @@ create policy "Admins can update gallery" on public.gallery_items
   for update to authenticated using ((select public.is_site_admin())) with check ((select public.is_site_admin()));
 create policy "Admins can delete gallery" on public.gallery_items
   for delete to authenticated using ((select public.is_site_admin()));
+
+-- 베타 의견은 공개 방문자가 제출할 수 있고 관리자만 읽고 관리합니다.
+create table if not exists public.beta_feedback (
+  id uuid primary key default gen_random_uuid(),
+  category text not null default '개선 의견' check (category in ('개선 의견', '오류 제보', '칭찬/기타')),
+  message text not null check (char_length(btrim(message)) between 5 and 2000),
+  created_at timestamptz not null default now(),
+  is_reviewed boolean not null default false,
+  admin_note text not null default ''
+);
+
+alter table public.beta_feedback enable row level security;
+grant insert (category, message) on public.beta_feedback to anon, authenticated;
+grant select, delete on public.beta_feedback to authenticated;
+grant update (is_reviewed, admin_note) on public.beta_feedback to authenticated;
+create policy "Public can submit beta feedback" on public.beta_feedback
+  for insert to anon, authenticated with check (
+    category in ('개선 의견', '오류 제보', '칭찬/기타')
+    and char_length(btrim(message)) between 5 and 2000
+    and is_reviewed = false and admin_note = ''
+  );
+create policy "Admins can read beta feedback" on public.beta_feedback
+  for select to authenticated using ((select public.is_site_admin()));
+create policy "Admins can update beta feedback" on public.beta_feedback
+  for update to authenticated using ((select public.is_site_admin()))
+  with check ((select public.is_site_admin()));
+create policy "Admins can delete beta feedback" on public.beta_feedback
+  for delete to authenticated using ((select public.is_site_admin()));

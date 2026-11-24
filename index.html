@@ -10,9 +10,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang&family=Hahmlet:wght@400;500;600;700&family=Pretendard:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@6.19.0/dist/maplibre-gl.css" />
-    <link rel="stylesheet" href="./styles.css?v=free-map-2" />
+    <link rel="stylesheet" href="./styles.css?v=beta-feedback-1" />
     <script src="./public/config.js?v=kakao-map-2" defer></script>
-    <script src="./script.js?v=kakao-map-1" defer></script>
+    <script src="./account.js?v=beta-menu-1" defer></script>
+    <script src="./script.js?v=beta-feedback-1" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#main">본문 바로가기</a>
@@ -31,6 +32,7 @@
           <a href="./bulletin.html">주보보기</a>
           <a href="#directions">오시는길</a>
           <a href="./gallery.html">갤러리</a>
+          <a href="#beta-feedback">베타 의견 남기기</a>
           <div class="account-links"><a href="./admin.html?mode=signup">회원가입</a><a href="./admin.html?mode=login">로그인</a></div>
         </nav>
       </div>
@@ -100,6 +102,33 @@
               <h3>새로운 소식을 준비하고 있습니다</h3>
             </article>
           </div>
+        </div>
+      </section>
+
+      <section class="beta-feedback-section content-section" id="beta-feedback">
+        <div class="beta-feedback-wrap">
+          <div class="section-title">
+            <p class="eyebrow">BETA OPEN</p>
+            <h2>베타 서비스 의견 남기기</h2>
+            <p>사용 중 불편한 점이나 제안을 보내주세요. 소중한 의견은 사이트 개선에 반영하겠습니다.</p>
+          </div>
+          <form class="beta-feedback-form" id="beta-feedback-form">
+            <label>의견 종류
+              <select name="category" required>
+                <option value="개선 의견">개선 의견</option>
+                <option value="오류 제보">오류 제보</option>
+                <option value="칭찬/기타">칭찬/기타</option>
+              </select>
+            </label>
+            <label>의견 내용
+              <textarea name="message" rows="5" minlength="5" maxlength="2000" placeholder="사이트에서 좋았던 점이나 개선할 점을 적어주세요." required></textarea>
+              <span class="feedback-hint"><span id="feedback-count">0</span>/2,000자</span>
+            </label>
+            <label class="feedback-honeypot" aria-hidden="true">웹사이트<input name="website" tabindex="-1" autocomplete="off" /></label>
+            <p class="feedback-privacy-note">의견은 사이트 관리자에게 전달됩니다. 연락처와 같은 개인정보는 입력하지 말아주세요.</p>
+            <button class="feedback-submit" type="submit">의견 보내기</button>
+            <p class="feedback-message" id="feedback-message" role="status" aria-live="polite"></p>
+          </form>
         </div>
       </section>
 

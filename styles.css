@@ -104,6 +104,28 @@ h1, h2, h3, p { overflow-wrap: anywhere; }
 .footer-inner small { color: #9ba1ae; font-size: 11px; }
 .footer-admin-link { float: right; color: #aeb7ca; font-size: 11px; }
 
+.account-status { color: inherit; }
+.account-logout { padding: 0; border: 0; background: transparent; color: inherit; font: inherit; cursor: pointer; }
+.account-logout:hover, .account-logout:focus-visible { text-decoration: underline; }
+.subpage-header-actions { display: flex; align-items: center; gap: 16px; }
+.subpage-header-actions .account-links { align-items: center; justify-content: flex-start; gap: 12px; padding: 0; font-size: 12px; }
+
+.beta-feedback-section { padding: 48px 20px 58px; background: #f3f5f9; }
+.beta-feedback-wrap { width: min(100%, 640px); margin: 0 auto; }
+.beta-feedback-form { margin-top: 25px; padding: 24px; display: grid; gap: 16px; border: 1px solid #e0e4ec; border-radius: 14px; background: #fff; box-shadow: 0 8px 24px #192b4d0a; }
+.beta-feedback-form label { display: grid; gap: 8px; color: #313947; font-size: 13px; font-weight: 600; }
+.beta-feedback-form select, .beta-feedback-form textarea { width: 100%; padding: 11px 12px; border: 1px solid #cfd5df; border-radius: 8px; background: #fff; color: #202633; font: 400 14px/1.6 Pretendard, "Noto Sans KR", sans-serif; }
+.beta-feedback-form select { min-height: 44px; }
+.beta-feedback-form textarea { min-height: 132px; resize: vertical; }
+.beta-feedback-form select:focus, .beta-feedback-form textarea:focus { border-color: var(--blue); outline: 3px solid #3059c81a; }
+.feedback-hint { justify-self: end; color: #777f8e; font-size: 11px; font-weight: 400; }
+.feedback-privacy-note { margin: -4px 0 0; color: #697184; font-size: 12px; line-height: 1.6; }
+.feedback-submit { min-height: 44px; border: 0; border-radius: 8px; background: var(--blue); color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; }
+.feedback-submit:disabled { opacity: .6; cursor: wait; }
+.feedback-message { min-height: 1.5em; margin: 0; color: #31539c; font-size: 13px; line-height: 1.6; }
+.feedback-message.is-error { color: #a42222; }
+.feedback-honeypot { position: absolute !important; left: -10000px !important; width: 1px; height: 1px; overflow: hidden; }
+
 @media (min-width: 760px) {
   .site-header { height: 76px; }
   .header-inner { width: min(100% - 64px, 1180px); }
@@ -112,6 +134,7 @@ h1, h2, h3, p { overflow-wrap: anywhere; }
   .primary-nav { position: static; display: flex; flex-direction: row; align-items: center; gap: 27px; padding: 0; background: transparent; box-shadow: none; }
   .primary-nav > a { min-height: auto; border: 0; font-size: 14px; }
   .primary-nav > a::after { content: none; }
+  .account-logout { font-size: 12px; }
   .account-links { padding: 0 0 0 14px; gap: 14px; font-size: 12px; }
   .hero { height: 488px; }
   .hero-photo { height: 365px; background-position: center 48%; }
@@ -157,6 +180,13 @@ h1, h2, h3, p { overflow-wrap: anywhere; }
   .section-nav a { font-size: 12px; }
   .quick-links { width: calc(100% - 24px); gap: 3px; }
   .quick-links a { font-size: 12px; }
+}
+
+@media (max-width: 600px) {
+  .subpage-header-actions { gap: 9px; }
+  .subpage-header-actions .account-links { gap: 9px; font-size: 10px; }
+  .subpage-home { font-size: 11px; }
+  .beta-feedback-form { padding: 18px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

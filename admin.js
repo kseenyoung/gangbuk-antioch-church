@@ -180,13 +180,42 @@ function renderGalleryForm(item = {}) {
   return form;
 }
 
+function renderFeedbackItem(item) {
+  const card = document.createElement("article");
+  card.className = "feedback-admin-item";
+  const metadata = document.createElement("div");
+  metadata.className = "feedback-admin-meta";
+  const category = document.createElement("strong");
+  category.textContent = item.category;
+  const time = document.createElement("time");
+  time.dateTime = item.created_at;
+  time.textContent = new Intl.DateTimeFormat("ko-KR", { dateStyle: "medium", timeStyle: "short" }).format(new Date(item.created_at));
+  const status = document.createElement("span");
+  status.textContent = item.is_reviewed ? "확인 완료" : "미확인";
+  metadata.append(category, time, status);
+  const message = document.createElement("p");
+  message.className = "feedback-admin-message";
+  message.textContent = item.message;
+  const actions = document.createElement("div");
+  actions.className = "editor-actions";
+  const reviewButton = makeActionButton(item.is_reviewed ? "미확인으로 변경" : "확인 완료", "admin-secondary-button", "button", "toggle-feedback");
+  reviewButton.dataset.id = item.id;
+  reviewButton.dataset.reviewed = String(item.is_reviewed);
+  const deleteButton = makeActionButton("삭제", "admin-danger-button", "button", "delete-feedback");
+  deleteButton.dataset.id = item.id;
+  actions.append(reviewButton, deleteButton);
+  card.append(metadata, message, actions);
+  return card;
+}
+
 async function loadAdminContent() {
   const settingsResult = await supabase.from("site_settings").select("key,value");
   const servicesResult = await supabase.from("worship_services").select("id,name,time_text,sort_order,is_visible").order("sort_order");
   const newsResult = await supabase.from("news_posts").select("id,title,summary,image_url,published_at,is_published").order("published_at", { ascending: false });
   const bulletinsResult = await supabase.from("bulletins").select("id,title,description,file_url,published_at,is_published").order("published_at", { ascending: false });
   const galleryResult = await supabase.from("gallery_items").select("id,title,description,image_url,event_date,is_published,sort_order").order("sort_order").order("event_date", { ascending: false });
-  for (const result of [settingsResult, servicesResult, newsResult, bulletinsResult, galleryResult]) {
+  const feedbackResult = await supabase.from("beta_feedback").select("id,category,message,created_at,is_reviewed").order("created_at", { ascending: false });
+  for (const result of [settingsResult, servicesResult, newsResult, bulletinsResult, galleryResult, feedbackResult]) {
     if (result.error) throw result.error;
   }
 
@@ -214,6 +243,10 @@ async function loadAdminContent() {
   galleryEditor.replaceChildren();
   if (!galleryResult.data?.length) galleryEditor.append(Object.assign(document.createElement("p"), { className: "admin-empty", textContent: "등록된 사진이 없습니다." }));
   else galleryResult.data.forEach((item) => galleryEditor.append(renderGalleryForm(item)));
+  const feedbackEditor = document.querySelector("#feedback-editor");
+  feedbackEditor.replaceChildren();
+  if (!feedbackResult.data?.length) feedbackEditor.append(Object.assign(document.createElement("p"), { className: "admin-empty", textContent: "아직 접수된 베타 의견이 없습니다." }));
+  else feedbackResult.data.forEach((item) => feedbackEditor.append(renderFeedbackItem(item)));
 }
 
 async function enterDashboard(user) {
@@ -426,6 +459,22 @@ document.querySelector("#bulletins-editor")?.addEventListener("click", (event) =
 document.querySelector("#gallery-editor")?.addEventListener("click", (event) => {
   const form = event.target.closest('[data-action="delete-gallery"]')?.closest("form");
   if (form?.dataset.id) deleteRecord("gallery_items", form.dataset.id, "갤러리 사진").catch((error) => setMessage(dashboardMessage, error.message, true));
+});
+document.querySelector("#refresh-feedback")?.addEventListener("click", () => loadAdminContent().catch((error) => setMessage(dashboardMessage, error.message, true)));
+document.querySelector("#feedback-editor")?.addEventListener("click", async (event) => {
+  const button = event.target.closest("[data-action]");
+  if (!button?.dataset.id) return;
+  if (button.dataset.action === "delete-feedback") {
+    deleteRecord("beta_feedback", button.dataset.id, "베타 의견").catch((error) => setMessage(dashboardMessage, error.message, true));
+    return;
+  }
+  if (button.dataset.action === "toggle-feedback") {
+    button.disabled = true;
+    const { error } = await supabase.from("beta_feedback").update({ is_reviewed: button.dataset.reviewed !== "true" }).eq("id", button.dataset.id);
+    if (error) setMessage(dashboardMessage, error.message, true);
+    else { setMessage(dashboardMessage, "의견 확인 상태를 저장했습니다."); await loadAdminContent(); }
+    button.disabled = false;
+  }
 });
 document.querySelector("#sign-out")?.addEventListener("click", async () => {
   const { error } = await supabase.auth.signOut();
