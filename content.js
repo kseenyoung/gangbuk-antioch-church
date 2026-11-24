@@ -46,10 +46,88 @@ async function load() {
     const { data, error } = await client.from("gallery_items").select("id,title,description,image_url,event_date").eq("is_published", true).order("sort_order").order("event_date", { ascending: false });
     if (error) throw error;
     if (!data?.length) return setEmpty("등록된 사진이 없습니다. 교회 소식을 사진으로 나눌 예정입니다.");
-    root.innerHTML = data.map((item) => `<article class="gallery-card"><img src="${escapeHtml(safeHttpsUrl(item.image_url) || "./public/assets/event-placeholder.png")}" alt="${escapeHtml(item.title)}" loading="lazy"><div><time>${escapeHtml(dateLabel(item.event_date))}</time><h2>${escapeHtml(item.title)}</h2><p>${escapeHtml(item.description)}</p></div></article>`).join("");
+    renderGallery(data);
   } catch (error) {
     console.error("콘텐츠를 불러오지 못했습니다.", error);
     setEmpty("콘텐츠를 불러오지 못했습니다. 잠시 후 다시 확인해 주세요.");
   }
 }
+
+function galleryGroupKey(item) {
+  return `${item.event_date ?? ""}|${item.title ?? ""}`;
+}
+
+function renderGallery(items) {
+  photosForAllGroups = items;
+  const groups = new Map();
+  items.forEach((item) => {
+    const key = galleryGroupKey(item);
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(item);
+  });
+
+  const activityKey = location.hash.startsWith("#activity=")
+    ? decodeURIComponent(location.hash.slice("#activity=".length))
+    : "";
+  if (activityKey && groups.has(activityKey)) {
+    renderGalleryActivity(activityKey, groups.get(activityKey));
+    return;
+  }
+
+  root.className = "gallery-grid subpage-content";
+  root.innerHTML = [...groups.entries()].map(([key, photos]) => {
+    const cover = safeHttpsUrl(photos[0].image_url) || "./public/assets/event-placeholder.png";
+    const description = photos[0].description || "활동 사진을 모아 보세요.";
+    return `<button class="gallery-card" type="button" data-gallery-activity="${escapeHtml(key)}" aria-label="${escapeHtml(photos[0].title)} 활동 사진 ${photos.length}장 보기"><img src="${escapeHtml(cover)}" alt="${escapeHtml(photos[0].title)}" loading="lazy"><span class="gallery-card-copy"><time>${escapeHtml(dateLabel(photos[0].event_date))}</time><strong>${escapeHtml(photos[0].title)}</strong><span>${escapeHtml(description)}</span><span class="gallery-photo-count">사진 ${photos.length}장 보기　›</span></span></button>`;
+  }).join("");
+
+  root.querySelectorAll("[data-gallery-activity]").forEach((card) => {
+    card.addEventListener("click", () => {
+      const key = card.dataset.galleryActivity;
+      history.pushState(null, "", `${location.pathname}${location.search}#activity=${encodeURIComponent(key)}`);
+      renderGallery(items);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  });
+}
+
+function renderGalleryActivity(key, photos) {
+  root.className = "gallery-activity subpage-content";
+  const back = document.createElement("button");
+  back.className = "gallery-back";
+  back.type = "button";
+  back.textContent = "‹ 활동 목록으로";
+  back.addEventListener("click", () => {
+    history.pushState(null, "", `${location.pathname}${location.search}`);
+    renderGallery(photosForAllGroups);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+  const title = document.createElement("h2");
+  title.textContent = photos[0].title;
+  const date = document.createElement("p");
+  date.className = "gallery-activity-date";
+  date.textContent = dateLabel(photos[0].event_date);
+  const description = document.createElement("p");
+  description.className = "gallery-activity-description";
+  description.textContent = photos[0].description || `이 활동의 사진 ${photos.length}장을 모았습니다.`;
+  const grid = document.createElement("div");
+  grid.className = "gallery-photo-grid";
+  photos.forEach((photo, index) => {
+    const image = document.createElement("img");
+    image.src = safeHttpsUrl(photo.image_url) || "./public/assets/event-placeholder.png";
+    image.alt = `${photos[0].title} 사진 ${index + 1}`;
+    image.loading = "lazy";
+    grid.append(image);
+  });
+  root.replaceChildren(back, title, date, description, grid);
+}
+
+let photosForAllGroups = [];
+window.addEventListener("popstate", () => {
+  if (pageType === "gallery" && photosForAllGroups.length) renderGallery(photosForAllGroups);
+});
+window.addEventListener("hashchange", () => {
+  if (pageType === "gallery" && photosForAllGroups.length) renderGallery(photosForAllGroups);
+});
+
 load();

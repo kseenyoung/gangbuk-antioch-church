@@ -8,6 +8,9 @@ async function setupAccountNavigation() {
     const supabase = createClient(accountConfig.supabaseUrl, accountConfig.supabaseKey);
 
     const render = async (session) => {
+      document.querySelectorAll(".footer-admin-link").forEach((link) => {
+        link.hidden = Boolean(session?.user);
+      });
       for (const container of accountContainers) {
         container.replaceChildren();
         if (!session?.user) {
