@@ -40,7 +40,7 @@ async function load() {
       const { data, error } = await client.from("bulletins").select("id,title,description,file_url,published_at").eq("is_published", true).order("published_at", { ascending: false });
       if (error) throw error;
       if (!data?.length) return setEmpty("등록된 주보가 없습니다. 새로운 주보를 준비하고 있습니다.");
-      root.innerHTML = data.map((item) => `<article class="bulletin-card"><div><time>${escapeHtml(dateLabel(item.published_at))}</time><h2>${escapeHtml(item.title)}</h2><p>${escapeHtml(item.description)}</p></div><a class="outline-button" href="${escapeHtml(safeHttpsUrl(item.file_url) || "#")}" target="_blank" rel="noopener noreferrer">주보 보기 <span aria-hidden="true">↗</span></a></article>`).join("");
+      root.innerHTML = data.map((item) => `<article class="bulletin-card"><div><time>${escapeHtml(dateLabel(item.published_at))}</time><h2>${escapeHtml(item.title)}</h2><p>${escapeHtml(item.description)}</p></div><a class="outline-button" href="${escapeHtml(safeHttpsUrl(item.file_url) || "#")}" target="_blank" rel="noopener noreferrer">${item.title.includes("예시") ? "예시 확인" : "주보 보기"} <span aria-hidden="true">↗</span></a></article>`).join("");
       return;
     }
     const { data, error } = await client.from("gallery_items").select("id,title,description,image_url,event_date").eq("is_published", true).order("sort_order").order("event_date", { ascending: false });
