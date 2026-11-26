@@ -1,6 +1,6 @@
 const nav = document.querySelector(".primary-nav");
 const navLinks = [
-  ["홈", "./index.html#top"],
+  ["사영리", "./four-laws.html"],
   ["교회소개", "./index.html#about"],
   ["담임목사 소개", "./pastor.html"],
   ["예배안내", "./index.html#worship"],

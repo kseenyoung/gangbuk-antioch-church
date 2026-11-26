@@ -1,0 +1,71 @@
+.four-laws-page { background: #f6f7fa; }
+.four-laws-main { width: min(100% - 36px, 880px); margin: 0 auto; padding: 62px 0 84px; }
+.four-laws-intro { margin: 0 auto 34px; text-align: center; }
+.four-laws-intro .eyebrow { margin: 0 0 13px; color: #46639d; font-size: 11px; font-weight: 700; letter-spacing: .18em; }
+.four-laws-intro h1 { margin: 0; color: #17213a; font: 600 34px/1.4 Hahmlet, serif; letter-spacing: -.035em; }
+.four-laws-intro > p:nth-of-type(2) { margin: 12px 0 0; color: #525e72; font: 400 16px/1.85 Pretendard, sans-serif; }
+.intro-rule { width: 42px; height: 2px; margin: 22px auto 15px; display: block; background: #6685ca; }
+.four-laws-intro .intro-note { margin: 0; color: #727b8c; font-size: 13px; line-height: 1.7; }
+.law-walkthrough { width: min(100%, 720px); margin: 0 auto; }
+.law-stepper { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.law-step { min-height: 65px; padding: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid #dce1eb; border-radius: 10px; background: #fff; color: #70798a; font: 500 13px Pretendard, sans-serif; cursor: pointer; transition: background .18s, color .18s, border-color .18s; }
+.law-step span:first-child { color: #939bad; font-size: 11px; font-weight: 700; }
+.law-step:hover, .law-step:focus-visible { border-color: #8ea2d1; outline-color: #3059c8; }
+.law-step.is-current { border-color: #3059c8; background: #3059c8; color: #fff; box-shadow: 0 5px 15px #3059c827; }
+.law-step.is-current span:first-child { color: #dfe7ff; }
+.law-progress-row { margin: 19px 2px 14px; display: flex; align-items: center; gap: 13px; color: #606b80; font-size: 12px; font-weight: 700; }
+.law-progress-track { height: 5px; flex: 1; overflow: hidden; border-radius: 99px; background: #e1e5ed; }
+.law-progress-value { width: 25%; height: 100%; display: block; border-radius: inherit; background: #5577c7; transition: width .25s ease; }
+.law-panel { min-height: 355px; padding: 40px clamp(24px, 7vw, 62px) 36px; border: 1px solid #e0e5ee; border-radius: 16px; background: #fff; box-shadow: 0 12px 38px #1a2b4d0b; text-align: center; }
+.law-panel[hidden] { display: none; }
+.law-symbol { width: 62px; height: 62px; margin: 0 auto 20px; display: grid; place-items: center; border-radius: 50%; background: #edf2fc; color: #3159b5; font: 400 40px/1 Hahmlet, serif; }
+.law-symbol-heart { font-size: 44px; }
+.law-symbol-gap { display: flex; align-items: center; justify-content: center; gap: 8px; }
+.law-symbol-gap span { width: 13px; height: 42px; display: block; border-radius: 99px; background: #5071bb; transform: rotate(30deg); }
+.law-symbol-cross { font-size: 45px; }
+.law-symbol-response { font: 600 35px/1 Pretendard, sans-serif; }
+.law-kicker { margin: 0 0 9px; color: #526a9d; font-size: 12px; font-weight: 700; letter-spacing: .02em; }
+.law-panel h2 { margin: 0; color: #17213a; font: 600 25px/1.55 Hahmlet, serif; letter-spacing: -.025em; }
+.law-panel h2:focus { outline: none; }
+.law-description { max-width: 540px; margin: 16px auto 0; color: #4e586b; font-size: 15px; line-height: 1.9; word-break: keep-all; }
+.law-scripture { width: fit-content; margin: 22px auto 0; padding: 9px 13px; border-radius: 7px; background: #f4f6fa; color: #33415f; font-size: 13px; font-weight: 600; }
+.law-scripture span { margin-right: 8px; color: #737e91; font-size: 11px; font-weight: 500; }
+.law-prayer { max-width: 540px; margin: 20px auto 0; border-top: 1px solid #e7eaf0; text-align: left; }
+.law-prayer summary { padding: 15px 2px 5px; color: #3455ad; font-size: 13px; font-weight: 700; cursor: pointer; }
+.law-prayer p { margin: 8px 0; color: #394356; font-size: 14px; line-height: 1.8; }
+.law-prayer small { color: #727b8c; font-size: 12px; line-height: 1.6; }
+.law-controls { margin-top: 15px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.law-controls button { min-height: 44px; padding: 0 16px; border-radius: 8px; font: 600 13px Pretendard, sans-serif; cursor: pointer; }
+.law-prev { border: 1px solid #d5dbe6; background: #fff; color: #49566c; }
+.law-prev:disabled { opacity: .4; cursor: default; }
+.law-next { min-width: 142px; border: 1px solid #3059c8; background: #3059c8; color: #fff; }
+.law-next span { margin-left: 6px; font-size: 17px; }
+.law-next-steps { margin-top: 33px; padding: 30px clamp(20px, 5vw, 40px); border-radius: 14px; background: linear-gradient(145deg, #edf2fc, #fff); text-align: center; }
+.law-next-steps[hidden] { display: none; }
+.law-next-steps .eyebrow { margin: 0 0 7px; color: #526a9d; font-size: 10px; font-weight: 700; letter-spacing: .16em; }
+.law-next-steps h2 { margin: 0; color: #17213a; font: 600 22px/1.5 Hahmlet, serif; }
+.law-next-steps > p:not(.eyebrow) { max-width: 540px; margin: 10px auto 18px; color: #596477; font-size: 14px; line-height: 1.8; word-break: keep-all; }
+.law-next-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 9px; }
+.law-next-links a { min-height: 40px; padding: 0 15px; display: inline-flex; align-items: center; justify-content: center; border-radius: 7px; font-size: 12px; font-weight: 700; }
+.law-primary-link { background: #3059c8; color: #fff; }
+.law-secondary-link { border: 1px solid #cbd4e5; background: #fff; color: #34415b; }
+@media (max-width: 600px) {
+  .four-laws-main { width: min(100% - 28px, 880px); padding: 42px 0 58px; }
+  .four-laws-intro { margin-bottom: 26px; }
+  .four-laws-intro h1 { font-size: 28px; }
+  .four-laws-intro > p:nth-of-type(2) { font-size: 14px; }
+  .desktop-break { display: none; }
+  .law-stepper { gap: 6px; }
+  .law-step { min-height: 60px; flex-direction: column; gap: 4px; padding: 7px 3px; font-size: 12px; }
+  .law-panel { min-height: 375px; padding: 32px 20px 28px; }
+  .law-symbol { width: 54px; height: 54px; margin-bottom: 17px; font-size: 36px; }
+  .law-symbol-heart { font-size: 40px; }
+  .law-panel h2 { font-size: 21px; }
+  .law-description { margin-top: 14px; font-size: 14px; line-height: 1.85; }
+  .law-scripture { font-size: 12px; }
+  .law-controls button { min-height: 42px; padding: 0 12px; }
+  .law-next-links { display: grid; grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .law-progress-value, .law-step { transition: none; }
+}
